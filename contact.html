@@ -65,10 +65,11 @@
     </dl>
   </div>
   <div>
-    <form class="form-card" id="te-contact-form" action="https://formsubmit.co/IT22294234@my.sliit.lk" method="POST" target="te-contact-response">
+    <form class="form-card" id="te-contact-form" action="https://formsubmit.co/IT22294234@my.sliit.lk" method="POST">
       <input type="hidden" name="_subject" value="New message from TrafficEye Research Portfolio">
       <input type="hidden" name="_template" value="table">
       <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" value="https://trafficeye-research-website.vercel.app/contact.html?sent=1">
       <div class="te-honeypot" aria-hidden="true"><label>Do not fill this field<input type="text" name="_honey" tabindex="-1" autocomplete="off"></label></div>
       <h2>Send a message</h2>
       <p>Send your enquiry directly to the TrafficEye researcher using the form below.</p>
@@ -81,8 +82,6 @@
       <button class="btn btn--primary" type="submit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></svg> Send message</button>
       <p class="form-status" id="te-form-status" role="status" aria-live="polite" hidden></p>
     </form>
-    <!-- Native form POST keeps the proven email-delivery path, without leaving Contact Us. -->
-    <iframe id="te-contact-response" name="te-contact-response" title="Contact form response" aria-hidden="true" tabindex="-1" style="position:absolute;width:0;height:0;border:0;visibility:hidden"></iframe>
     <div class="template"><div class="template__bar"><strong>General email template</strong>
       <button class="btn btn--outline btn--sm" type="button" data-copy-target="email-template" data-copy-status="copy-status"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg> Copy template</button></div>
       <pre id="email-template">Subject: Enquiry about the TrafficEye research (R26-IT-056)
@@ -135,58 +134,20 @@ Kind regards,
 <button class="back-top" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
 <script src="assets/js/main.js" defer></script>
 <script>
-// Preserve the native FormSubmit POST that previously delivered email.
-// Only its response is shown in a hidden iframe so visitors remain on this page.
+// The form uses a normal browser POST to FormSubmit, not AJAX.
+// This avoids misleading AJAX status errors and keeps the submit button working.
 (function () {
   "use strict";
-  const form = document.getElementById("te-contact-form");
-  const frame = document.getElementById("te-contact-response");
-  const status = document.getElementById("te-form-status");
-  if (!form || !frame || !status) return;
-
-  const button = form.querySelector('button[type="submit"]');
-  let pending = false;
-  let fallbackTimer = null;
-
-  form.addEventListener("submit", function (event) {
-    if (!form.reportValidity()) {
-      event.preventDefault();
-      return;
-    }
-    const trap = form.elements.namedItem("_honey");
-    if (trap && trap.value) {
-      event.preventDefault();
-      return;
-    }
-
-    // Do not call preventDefault here: the browser submits the real form by POST.
-    pending = true;
-    if (button) button.disabled = true;
-    status.hidden = false;
-    status.className = "form-status";
-    status.textContent = "Sending your message...";
-
-    if (fallbackTimer) clearTimeout(fallbackTimer);
-    // If the confirmation page can't be displayed in a frame, do not leave a stuck button.
-    fallbackTimer = setTimeout(function () {
-      if (!pending) return;
-      pending = false;
-      if (button) button.disabled = false;
-      status.textContent = "Submission was attempted. Please check your inbox before trying again.";
-    }, 15000);
-  }, true);
-
-  frame.addEventListener("load", function () {
-    // Ignore the iframe's initial about:blank load.
-    if (!pending) return;
-    pending = false;
-    if (fallbackTimer) clearTimeout(fallbackTimer);
-    if (button) button.disabled = false;
-    status.hidden = false;
-    status.className = "form-status te-success";
-    // A cross-origin response cannot prove email delivery; the mailbox is authoritative.
-    status.textContent = "Submission finished. Please check your email inbox to confirm delivery.";
-  });
+  var params = new URLSearchParams(window.location.search);
+  if (params.get("sent") !== "1") return;
+  var status = document.getElementById("te-form-status");
+  if (!status) return;
+  status.hidden = false;
+  status.className = "form-status te-success";
+  status.textContent = "Your message was submitted. Thank you!";
+  params.delete("sent");
+  var query = params.toString();
+  window.history.replaceState(null, "", window.location.pathname + (query ? "?" + query : "") + window.location.hash);
 })();
 </script>
 </body>
