@@ -69,6 +69,7 @@
       <input type="hidden" name="_subject" value="New message from TrafficEye Research Portfolio">
       <input type="hidden" name="_template" value="table">
       <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" value="https://trafficeye-research-website.vercel.app/contact.html?sent=1">
       <div class="te-honeypot" aria-hidden="true"><label>Do not fill this field<input type="text" name="_honey" tabindex="-1" autocomplete="off"></label></div>
       <h2>Send a message</h2>
       <p>Send your enquiry directly to the TrafficEye researcher using the form below.</p>
@@ -133,64 +134,20 @@ Kind regards,
 <button class="back-top" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
 <script src="assets/js/main.js" defer></script>
 <script>
-// Contact form only. Uses FormSubmit AJAX; email confirmation is required before delivery.
+// The form uses a normal browser POST to FormSubmit, not AJAX.
+// This avoids misleading AJAX status errors and keeps the submit button working.
 (function () {
   "use strict";
-  var form = document.getElementById("te-contact-form");
+  var params = new URLSearchParams(window.location.search);
+  if (params.get("sent") !== "1") return;
   var status = document.getElementById("te-form-status");
-  if (!form || !status) return;
-  form.addEventListener("submit", async function (event) {
-    event.preventDefault();
-    event.stopImmediatePropagation(); // avoid old mailto-only form handlers
-    if (!form.reportValidity()) return;
-    var button = form.querySelector('button[type="submit"]');
-    if (button && button.disabled) return;
-    var name = form.elements.namedItem("name").value.trim();
-    var sender = form.elements.namedItem("email").value.trim();
-    var subject = form.elements.namedItem("subject").value.trim();
-    var message = form.elements.namedItem("message").value.trim();
-    if (!name || !sender || !message) {
-      status.hidden = false;
-      status.className = "form-status te-error";
-      status.textContent = "Please fill in your name, email and message.";
-      return;
-    }
-    // Legitimate submissions leave the honeypot blank.
-    if (form.elements.namedItem("_honey").value) return;
-    if (button) button.disabled = true;
-    status.hidden = false;
-    status.className = "form-status";
-    status.textContent = "Sending your message...";
-    try {
-      var response = await fetch("https://formsubmit.co/ajax/IT22294234@my.sliit.lk", {
-        method: "POST",
-        headers: {"Content-Type": "application/json", "Accept": "application/json"},
-        body: JSON.stringify({
-          name: name,
-          email: sender,
-          _replyto: sender,
-          subject: subject || "TrafficEye research enquiry (R26-IT-056)",
-          message: message,
-          _subject: "TrafficEye Research Website: " + (subject || "New message"),
-          _template: "table",
-          _captcha: "false",
-          _honey: ""
-        })
-      });
-      var result = await response.json();
-      if (!response.ok || !(result.success === true || result.success === "true")) {
-        throw new Error(result.message || "Request was not accepted.");
-      }
-      status.className = "form-status te-success";
-      status.textContent = "Your message has been submitted. Thank you!";
-      form.reset();
-    } catch (error) {
-      status.hidden = true;
-      status.textContent = "";
-    } finally {
-      if (button) button.disabled = false;
-    }
-  }, true);
+  if (!status) return;
+  status.hidden = false;
+  status.className = "form-status te-success";
+  status.textContent = "Your message was submitted. Thank you!";
+  params.delete("sent");
+  var query = params.toString();
+  window.history.replaceState(null, "", window.location.pathname + (query ? "?" + query : "") + window.location.hash);
 })();
 </script>
 </body>
