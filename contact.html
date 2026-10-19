@@ -12,6 +12,21 @@
 <link rel="icon" href="assets/graphics/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/css/style.css">
 <script>document.documentElement.classList.add("js");</script>
+<style>
+/* Contact-page additions only. Existing website colors, layout and navigation are untouched. */
+.te-honeypot {position:absolute!important;left:-10000px!important;width:1px;height:1px;overflow:hidden}
+#te-contact-form .form-status[hidden] {display:none!important}
+#te-contact-form .form-status.te-success {color:#166534}
+#te-contact-form .form-status.te-error {color:#b42318}
+.te-supervision {padding-top:0;padding-bottom:clamp(40px,6vw,80px)}
+.te-supervision__heading {margin:0 0 22px;color:#0B1F3A;font-size:clamp(1.45rem,2.4vw,2rem)}
+.te-supervision__grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.te-supervision__person {display:flex;align-items:center;gap:20px;padding:22px;border:1px solid #dae2ec;border-radius:16px;background:#fff;box-shadow:0 2px 8px rgba(11,31,58,.045)}
+.te-supervision__photo {display:block;flex:0 0 100px;width:100px;height:100px;object-fit:cover;border-radius:50%;border:2px solid #edf2f9;background:#edf2f9}
+.te-supervision__role {color:#2563EB;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin:0 0 7px}
+.te-supervision__name {font-size:1.16rem;font-weight:700;color:#0B1F3A;line-height:1.35;margin:0}
+@media(max-width:760px){.te-supervision__grid{grid-template-columns:1fr}.te-supervision__person{padding:16px}.te-supervision__photo{flex-basis:82px;width:82px;height:82px}}
+</style>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip intro</a>
@@ -50,7 +65,7 @@
       <iframe src="https://maps.google.com/maps?q=Sri%20Lanka%20Institute%20of%20Information%20Technology%2C%20Malabe&amp;z=15&amp;output=embed" title="Map of Sri Lanka Institute of Information Technology, Malabe" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
     <a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=Sri+Lanka+Institute+of+Information+Technology+Malabe" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 4h6v6M10 14 20 4M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg> Open in Google Maps</a>
     <dl class="details">
-      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></svg><div><dt>Email</dt><dd><span class="tbc">Email to be added</span></dd></div></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></svg><div><dt>Email</dt><dd><a href="mailto:IT22294234@my.sliit.lk">IT22294234@my.sliit.lk</a></dd></div></div>
       <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><div><dt>Researcher</dt><dd>T. A. D. T. Jayampathi (IT22294234)</dd></div></div>
       <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m2 9 10-5 10 5-10 5L2 9z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5M22 9v6"/></svg><div><dt>Institution</dt><dd>Sri Lanka Institute of Information Technology, Department of Information Technology</dd></div></div>
       <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><div><dt>Address</dt><dd>SLIIT, New Kandy Road, Malabe 10115, Sri Lanka</dd></div></div>
@@ -58,17 +73,21 @@
     </dl>
   </div>
   <div>
-    <form class="form-card" id="contact-form" data-recipient="" novalidate>
+    <form class="form-card" id="te-contact-form" action="https://formsubmit.co/IT22294234@my.sliit.lk" method="POST">
+      <input type="hidden" name="_subject" value="New message from TrafficEye Research Portfolio">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <div class="te-honeypot" aria-hidden="true"><label>Do not fill this field<input type="text" name="_honey" tabindex="-1" autocomplete="off"></label></div>
       <h2>Send a message</h2>
-      <p>This form prepares the message in your own email app. Nothing is sent from this website.</p>
+      <p>Send your enquiry directly to the TrafficEye researcher using the form below.</p>
       <div class="field-row">
         <div class="field"><label for="f-name">Full name</label><input id="f-name" name="name" type="text" autocomplete="name" required></div>
         <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
       </div>
       <div class="field"><label for="f-subject">Subject</label><input id="f-subject" name="subject" type="text" value="TrafficEye research enquiry (R26-IT-056)"></div>
       <div class="field"><label for="f-message">Message</label><textarea id="f-message" name="message" required></textarea></div>
-      <button class="btn btn--primary" type="submit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></svg> Open in email app</button>
-      <p class="form-status" id="form-status" role="status">The button will work once the researcher's email address is added to this page. Until then, use the template below.</p>
+      <button class="btn btn--primary" type="submit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></svg> Send message</button>
+      <p class="form-status" id="te-form-status" role="status" aria-live="polite" hidden></p>
     </form>
     <div class="template"><div class="template__bar"><strong>General email template</strong>
       <button class="btn btn--outline btn--sm" type="button" data-copy-target="email-template" data-copy-status="copy-status"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg> Copy template</button></div>
@@ -88,6 +107,23 @@ Kind regards,
 [your name]</pre><p class="copy-status" id="copy-status" role="status"></p></div>
   </div>
 </div></section>
+
+<!-- Academic supervisory photos (contact page only) -->
+<section class="section te-supervision" aria-labelledby="te-supervision-heading">
+  <div class="container">
+    <h2 class="te-supervision__heading" id="te-supervision-heading">Academic Supervisors</h2>
+    <div class="te-supervision__grid">
+      <article class="te-supervision__person">
+        <img class="te-supervision__photo" src="assets/contact/supervisor-shashika.jpg" alt="Portrait of Shashika Lokuliyana" loading="lazy" width="100" height="100">
+        <div><p class="te-supervision__role">Supervisor</p><h3 class="te-supervision__name">Shashika Lokuliyana</h3></div>
+      </article>
+      <article class="te-supervision__person">
+        <img class="te-supervision__photo" src="assets/contact/co-supervisor-ashvinda.jpg" alt="Portrait of Ashvinda Iddamalgoda" loading="lazy" width="100" height="100">
+        <div><p class="te-supervision__role">Co-supervisor</p><h3 class="te-supervision__name">Ashvinda Iddamalgoda</h3></div>
+      </article>
+    </div>
+  </div>
+</section>
 </main>
 <footer class="footer">
   <div class="container">
@@ -106,7 +142,7 @@ Kind regards,
         <h2>Get in touch</h2>
         <dl>
           <dt>Researcher</dt><dd>T. A. D. T. Jayampathi (IT22294234)</dd>
-          <dt>Email</dt><dd><span class="tbc">Email to be added</span></dd>
+          <dt>Email</dt><dd><a href="mailto:IT22294234@my.sliit.lk">IT22294234@my.sliit.lk</a></dd>
           <dt>Address</dt><dd>SLIIT, New Kandy Road, Malabe 10115, Sri Lanka</dd>
           <dt>Project</dt><dd>R26-IT-056 · 2026</dd>
         </dl>
@@ -120,5 +156,66 @@ Kind regards,
 </footer>
 <button class="back-top" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
 <script src="assets/js/main.js" defer></script>
+<script>
+// Contact form only. Uses FormSubmit AJAX; email confirmation is required before delivery.
+(function () {
+  "use strict";
+  var form = document.getElementById("te-contact-form");
+  var status = document.getElementById("te-form-status");
+  if (!form || !status) return;
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    event.stopImmediatePropagation(); // avoid old mailto-only form handlers
+    if (!form.reportValidity()) return;
+    var button = form.querySelector('button[type="submit"]');
+    if (button && button.disabled) return;
+    var name = form.elements.namedItem("name").value.trim();
+    var sender = form.elements.namedItem("email").value.trim();
+    var subject = form.elements.namedItem("subject").value.trim();
+    var message = form.elements.namedItem("message").value.trim();
+    if (!name || !sender || !message) {
+      status.hidden = false;
+      status.className = "form-status te-error";
+      status.textContent = "Please fill in your name, email and message.";
+      return;
+    }
+    // Legitimate submissions leave the honeypot blank.
+    if (form.elements.namedItem("_honey").value) return;
+    if (button) button.disabled = true;
+    status.hidden = false;
+    status.className = "form-status";
+    status.textContent = "Sending your message...";
+    try {
+      var response = await fetch("https://formsubmit.co/ajax/IT22294234@my.sliit.lk", {
+        method: "POST",
+        headers: {"Content-Type": "application/json", "Accept": "application/json"},
+        body: JSON.stringify({
+          name: name,
+          email: sender,
+          _replyto: sender,
+          subject: subject || "TrafficEye research enquiry (R26-IT-056)",
+          message: message,
+          _subject: "TrafficEye Research Website: " + (subject || "New message"),
+          _template: "table",
+          _captcha: "false",
+          _honey: ""
+        })
+      });
+      var result = await response.json();
+      if (!response.ok || !(result.success === true || result.success === "true")) {
+        throw new Error(result.message || "Request was not accepted.");
+      }
+      status.className = "form-status te-success";
+      status.textContent = "Your message has been submitted. Thank you!";
+      form.reset();
+    } catch (error) {
+      status.className = "form-status te-error";
+      status.textContent = "Message could not be submitted. Please try again, or email IT22294234@my.sliit.lk directly.";
+    } finally {
+      if (button) button.disabled = false;
+    }
+  }, true);
+})();
+</script>
 </body>
 </html>
