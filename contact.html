@@ -185,8 +185,8 @@ Kind regards,
       status.textContent = "Your message has been submitted. Thank you!";
       form.reset();
     } catch (error) {
-      status.className = "form-status te-error";
-      status.textContent = "Message could not be submitted. Please try again, or email IT22294234@my.sliit.lk directly.";
+      status.hidden = true;
+      status.textContent = "";
     } finally {
       if (button) button.disabled = false;
     }
