@@ -12,6 +12,26 @@
 <link rel="icon" href="assets/graphics/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/css/style.css">
 <script>document.documentElement.classList.add("js");</script>
+<script>
+/* TrafficEye contact fix: keep browser-native FormSubmit POST.
+   Prevent other site-wide JS click/submit listeners from cancelling this form. */
+(function () {
+  "use strict";
+  window.addEventListener("click", function (event) {
+    var element = event.target;
+    if (element && element.closest && element.closest('#te-contact-form button[type="submit"]')) {
+      event.stopImmediatePropagation();
+    }
+  }, true);
+  window.addEventListener("submit", function (event) {
+    if (event.target && event.target.id === "te-contact-form") {
+      event.stopImmediatePropagation();
+      // Never call preventDefault(): the browser must send the real POST.
+    }
+  }, true);
+})();
+</script>
+
 <style>
 /* Contact-page additions only. Existing website colors, layout and navigation are untouched. */
 .te-honeypot {position:absolute!important;left:-10000px!important;width:1px;height:1px;overflow:hidden}
