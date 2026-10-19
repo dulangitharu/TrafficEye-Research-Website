@@ -13,20 +13,79 @@
 <link rel="stylesheet" href="assets/css/style.css">
 <script>document.documentElement.classList.add("js");</script>
 <script>
-/* TrafficEye contact fix: keep browser-native FormSubmit POST.
-   Prevent other site-wide JS click/submit listeners from cancelling this form. */
+/* TrafficEye: FormSubmit's documented AJAX API; no cross-site Thank You redirect. */
 (function () {
   "use strict";
-  window.addEventListener("click", function (event) {
-    var element = event.target;
-    if (element && element.closest && element.closest('#te-contact-form button[type="submit"]')) {
-      event.stopImmediatePropagation();
+  const endpoint = "https://formsubmit.co/ajax/IT22294234@my.sliit.lk";
+
+  // Capture before older site-wide listeners, without affecting any other forms.
+  window.addEventListener("submit", async function (event) {
+    const form = event.target;
+    if (!form || form.id !== "te-contact-form") return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+
+    const button = form.querySelector('button[type="submit"]');
+    const status = document.getElementById("te-form-status");
+    if (!status || !button || button.disabled) return;
+    if (!form.reportValidity()) return;
+
+    const honeypot = form.elements.namedItem("_honey");
+    if (honeypot && honeypot.value) return;
+
+    const name = form.elements.namedItem("name").value.trim();
+    const email = form.elements.namedItem("email").value.trim();
+    const subject = form.elements.namedItem("subject").value.trim();
+    const message = form.elements.namedItem("message").value.trim();
+    if (!name || !email || !message) {
+      status.hidden = false;
+      status.className = "form-status te-error";
+      status.textContent = "Please enter your name, a valid email address and your message.";
+      return;
     }
-  }, true);
-  window.addEventListener("submit", function (event) {
-    if (event.target && event.target.id === "te-contact-form") {
-      event.stopImmediatePropagation();
-      // Never call preventDefault(): the browser must send the real POST.
+
+    button.disabled = true;
+    status.hidden = false;
+    status.className = "form-status";
+    status.textContent = "Sending your message...";
+
+    const payload = {
+      name: name,
+      email: email,
+      _replyto: email,
+      subject: subject || "TrafficEye research enquiry (R26-IT-056)",
+      message: message,
+      _subject: "TrafficEye: " + (subject || "New research enquiry"),
+      _template: "table",
+      _url: "https://trafficeye-research-website.vercel.app/contact.html"
+    };
+
+    const controller = new AbortController();
+    const deadline = setTimeout(() => controller.abort(), 20000);
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(payload),
+        signal: controller.signal
+      });
+      const result = await response.json();
+      // FormSubmit returns success as the string "true" or "false".
+      if (!response.ok || String(result.success).toLowerCase() !== "true") {
+        throw new Error(result.message || "The email service did not accept the message.");
+      }
+      status.className = "form-status te-success";
+      status.textContent = "Message accepted by the email service. Thank you! Delivery to the inbox may take a few minutes.";
+      form.reset();
+    } catch (error) {
+      status.className = "form-status te-error";
+      status.textContent = "Could not confirm submission: " + (error.name === "AbortError" ? "Service timed out." : (error.message || "Network error.")) + " Please check the inbox and Spam/Junk before retrying.";
+    } finally {
+      clearTimeout(deadline);
+      button.disabled = false;
     }
   }, true);
 })();
@@ -88,8 +147,7 @@
     <form class="form-card" id="te-contact-form" action="https://formsubmit.co/IT22294234@my.sliit.lk" method="POST">
       <input type="hidden" name="_subject" value="New message from TrafficEye Research Portfolio">
       <input type="hidden" name="_template" value="table">
-      <input type="hidden" name="_captcha" value="false">
-      <input type="hidden" name="_next" value="https://trafficeye-research-website.vercel.app/contact.html?sent=1">
+      <input type="hidden" name="_url" value="https://trafficeye-research-website.vercel.app/contact.html">
       <div class="te-honeypot" aria-hidden="true"><label>Do not fill this field<input type="text" name="_honey" tabindex="-1" autocomplete="off"></label></div>
       <h2>Send a message</h2>
       <p>Send your enquiry directly to the TrafficEye researcher using the form below.</p>
@@ -153,22 +211,5 @@ Kind regards,
 </footer>
 <button class="back-top" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
 <script src="assets/js/main.js" defer></script>
-<script>
-// The form uses a normal browser POST to FormSubmit, not AJAX.
-// This avoids misleading AJAX status errors and keeps the submit button working.
-(function () {
-  "use strict";
-  var params = new URLSearchParams(window.location.search);
-  if (params.get("sent") !== "1") return;
-  var status = document.getElementById("te-form-status");
-  if (!status) return;
-  status.hidden = false;
-  status.className = "form-status te-success";
-  status.textContent = "Your message was submitted. Thank you!";
-  params.delete("sent");
-  var query = params.toString();
-  window.history.replaceState(null, "", window.location.pathname + (query ? "?" + query : "") + window.location.hash);
-})();
-</script>
 </body>
 </html>
