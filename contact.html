@@ -31,7 +31,7 @@
     if (!form.reportValidity()) return;
 
     const honeypot = form.elements.namedItem("botcheck");
-    if (honeypot && honeypot.value) return;
+    if (honeypot && honeypot.checked) return;
 
     const name = form.elements.namedItem("name").value.trim();
     const email = form.elements.namedItem("email").value.trim();
