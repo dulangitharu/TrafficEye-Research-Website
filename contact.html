@@ -13,12 +13,12 @@
 <link rel="stylesheet" href="assets/css/style.css">
 <script>document.documentElement.classList.add("js");</script>
 <script>
-/* TrafficEye: FormSubmit's documented AJAX API; no cross-site Thank You redirect. */
+/* TrafficEye: Web3Forms AJAX submission with in-page confirmation. */
 (function () {
   "use strict";
-  const endpoint = "https://formsubmit.co/ajax/IT22294234@my.sliit.lk";
+  const endpoint = "https://api.web3forms.com/submit";
+  const accessKey = "0200eea3-a7b6-4250-9783-7afadf7ac319";
 
-  // Capture before older site-wide listeners, without affecting any other forms.
   window.addEventListener("submit", async function (event) {
     const form = event.target;
     if (!form || form.id !== "te-contact-form") return;
@@ -30,13 +30,14 @@
     if (!status || !button || button.disabled) return;
     if (!form.reportValidity()) return;
 
-    const honeypot = form.elements.namedItem("_honey");
+    const honeypot = form.elements.namedItem("botcheck");
     if (honeypot && honeypot.value) return;
 
     const name = form.elements.namedItem("name").value.trim();
     const email = form.elements.namedItem("email").value.trim();
     const subject = form.elements.namedItem("subject").value.trim();
     const message = form.elements.namedItem("message").value.trim();
+
     if (!name || !email || !message) {
       status.hidden = false;
       status.className = "form-status te-error";
@@ -50,18 +51,19 @@
     status.textContent = "Sending your message...";
 
     const payload = {
+      access_key: accessKey,
       name: name,
       email: email,
-      _replyto: email,
       subject: subject || "TrafficEye research enquiry (R26-IT-056)",
       message: message,
-      _subject: "TrafficEye: " + (subject || "New research enquiry"),
-      _template: "table",
-      _url: "https://trafficeye-research-website.vercel.app/contact.html"
+      from_name: "TrafficEye Research Website",
+      botcheck: "",
+      replyto: email
     };
 
     const controller = new AbortController();
     const deadline = setTimeout(() => controller.abort(), 20000);
+
     try {
       const response = await fetch(endpoint, {
         method: "POST",
@@ -73,16 +75,15 @@
         signal: controller.signal
       });
       const result = await response.json();
-      // FormSubmit returns success as the string "true" or "false".
-      if (!response.ok || String(result.success).toLowerCase() !== "true") {
+      if (!response.ok || !result.success) {
         throw new Error(result.message || "The email service did not accept the message.");
       }
       status.className = "form-status te-success";
-      status.textContent = "Message accepted by the email service. Thank you! Delivery to the inbox may take a few minutes.";
+      status.textContent = "Message sent successfully. Please check the inbox in a few moments.";
       form.reset();
     } catch (error) {
       status.className = "form-status te-error";
-      status.textContent = "Could not confirm submission: " + (error.name === "AbortError" ? "Service timed out." : (error.message || "Network error.")) + " Please check the inbox and Spam/Junk before retrying.";
+      status.textContent = "Message could not be sent: " + (error.name === "AbortError" ? "Service timed out." : (error.message || "Network error."));
     } finally {
       clearTimeout(deadline);
       button.disabled = false;
@@ -144,11 +145,10 @@
     </dl>
   </div>
   <div>
-    <form class="form-card" id="te-contact-form" action="https://formsubmit.co/IT22294234@my.sliit.lk" method="POST">
-      <input type="hidden" name="_subject" value="New message from TrafficEye Research Portfolio">
-      <input type="hidden" name="_template" value="table">
-      <input type="hidden" name="_url" value="https://trafficeye-research-website.vercel.app/contact.html">
-      <div class="te-honeypot" aria-hidden="true"><label>Do not fill this field<input type="text" name="_honey" tabindex="-1" autocomplete="off"></label></div>
+    <form class="form-card" id="te-contact-form" action="https://api.web3forms.com/submit" method="POST">
+      <input type="hidden" name="access_key" value="0200eea3-a7b6-4250-9783-7afadf7ac319">
+      <input type="hidden" name="from_name" value="TrafficEye Research Website">
+      <input type="checkbox" name="botcheck" class="te-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
       <h2>Send a message</h2>
       <p>Send your enquiry directly to the TrafficEye researcher using the form below.</p>
       <div class="field-row">
